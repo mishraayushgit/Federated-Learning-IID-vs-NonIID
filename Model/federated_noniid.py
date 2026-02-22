@@ -9,17 +9,14 @@ import random
 
 from cnn_model import CNNModel
 
-# Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Config
 NUM_CLIENTS = 3
 BATCH_SIZE = 64
 LOCAL_EPOCHS = 1
 ROUNDS = 3
-CLASSES_PER_CLIENT = 2  # Non-IID severity
+CLASSES_PER_CLIENT = 2  
 
-# Load dataset
 transform = transforms.Compose([transforms.ToTensor()])
 
 train_dataset = datasets.MNIST(
@@ -38,7 +35,6 @@ test_dataset = datasets.MNIST(
 
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
-# Create Non-IID split
 class_indices = defaultdict(list)
 
 for idx, (_, label) in enumerate(train_dataset):
@@ -58,7 +54,6 @@ def get_dataloader(idxs):
     subset = Subset(train_dataset, idxs)
     return DataLoader(subset, batch_size=BATCH_SIZE, shuffle=True)
 
-# Flower Client
 class FlowerClient(fl.client.NumPyClient):
     def __init__(self, trainloader):
         self.model = CNNModel().to(device)
@@ -127,4 +122,5 @@ fl.simulation.start_simulation(
     num_clients=NUM_CLIENTS,
     config=fl.server.ServerConfig(num_rounds=ROUNDS),
     strategy=strategy,
+
 )
