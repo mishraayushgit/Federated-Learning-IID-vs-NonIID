@@ -8,20 +8,16 @@ from torch.utils.data import DataLoader
 
 from cnn_model import CNNModel
 
-# Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Hyperparameters
 BATCH_SIZE = 64
 EPOCHS = 5
 LEARNING_RATE = 0.001
 
-# Data transform
 transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-# Load MNIST
 train_dataset = datasets.MNIST(
     root="../Data",
     train=True,
@@ -46,7 +42,6 @@ optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 train_losses = []
 
-# Training Loop
 for epoch in range(EPOCHS):
     model.train()
     running_loss = 0.0
@@ -67,7 +62,6 @@ for epoch in range(EPOCHS):
 
     print(f"Epoch [{epoch+1}/{EPOCHS}], Loss: {epoch_loss:.4f}")
 
-# Evaluation
 model.eval()
 correct = 0
 total = 0
@@ -83,10 +77,10 @@ with torch.no_grad():
 accuracy = 100 * correct / total
 print(f"\nCentralized Test Accuracy: {accuracy:.2f}%")
 
-# Save Loss Graph
 plt.plot(train_losses)
 plt.title("Centralized Training Loss")
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.savefig("../Results/centralized_loss.png")
+
 plt.show()
